@@ -4,8 +4,6 @@ Pembuatan navigasi antar Screen (Stack Navigation dengan `Navigator.push`), peng
 
 ---
 
-## 1. Setup Project
-
 1. Clone repository:
    git clone [https://github.com/kaylapasha23/flutter-tugas-empat.git](https://github.com/kaylapasha23/flutter-tugas-empat.git)
 

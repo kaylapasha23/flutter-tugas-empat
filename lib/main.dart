@@ -11,192 +11,283 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Colors.grey[100],
-        body: const Center(
-          child: TieredPricingCard(),
-        ),
+      title: 'Katalog Paket IT',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+// Model data katalog
+class PackageItem {
+  final String title;
+  final String price;
+  final String description;
+  final List<String> features;
+  final String badgeText;
+
+  PackageItem({
+    required this.title,
+    required this.price,
+    required this.description,
+    required this.features,
+    this.badgeText = 'Populer',
+  });
+}
+
+// -----------------------------------------------------------------------------
+// SCREEN 1: BERANDA (StatelessWidget)
+// -----------------------------------------------------------------------------
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Data 3 Card Katalog
+    final List<PackageItem> packages = [
+      PackageItem(
+        title: 'Paket Dasar',
+        price: 'Rp 1.500.000',
+        description:
+            'Solusi tepat untuk UMKM dan personal yang membutuhkan website landing page profesional.',
+        features: ['Desain Responsive', '1 Halaman Utama', 'Form Kontak'],
+        badgeText: 'Hemat',
+      ),
+      PackageItem(
+        title: 'Paket Profesional',
+        price: 'Rp 5.000.000',
+        description:
+            'Solusi terbaik untuk kebutuhan sistem dan pengembangan IT tingkat lanjut bisnis Anda.',
+        features: [
+          'Desain UI/UX Khusus',
+          'Setup Database',
+          'Integrasi API',
+          'Dukungan Teknis 24/7'
+        ],
+        badgeText: 'Rekomendasi',
+      ),
+      PackageItem(
+        title: 'Paket Enterprise',
+        price: 'Rp 12.000.000',
+        description:
+            'Layanan kustom skala besar dengan infrastruktur cloud dan keamanan tingkat tinggi.',
+        features: [
+          'Full-Stack Custom App',
+          'Arsitektur Microservices',
+          'Garansi Pemeliharaan 1 Tahun'
+        ],
+        badgeText: 'Lengkap',
+      ),
+    ];
+
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        title: const Text('Katalog Layanan IT'),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+        foregroundColor: Colors.white,
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: packages.length,
+        itemBuilder: (context, index) {
+          final item = packages[index];
+          return Card(
+            elevation: 3,
+            margin: const EdgeInsets.only(bottom: 16.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ListTile(
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              leading: const CircleAvatar(
+                backgroundColor: Colors.blueAccent,
+                child: Icon(Icons.laptop_mac, color: Colors.white),
+              ),
+              title: Text(
+                item.title,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text('${item.price} / proyek'),
+              trailing: const Icon(Icons.chevron_right),
+              // Navigasi Navigator.push (Stack Navigation)
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailScreen(item: item),
+                  ),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class TieredPricingCard extends StatelessWidget {
-  const TieredPricingCard({super.key});
+// -----------------------------------------------------------------------------
+// SCREEN 2: DETAIL KATALOG (StatefulWidget)
+// -----------------------------------------------------------------------------
+class DetailScreen extends StatefulWidget {
+  final PackageItem item;
+
+  const DetailScreen({super.key, required this.item});
+
+  @override
+  State<DetailScreen> createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  // State interaktif 
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
-    // Layer Dasar (Pembungkus Utama)
-    return Container(
-      width: 300,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        title: Text(widget.item.title),
+        // Button back untuk kembali ke Screen 1
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        backgroundColor: Colors.blueAccent,
+        foregroundColor: Colors.white,
       ),
-      // Badge Melayang (Penggunaan Stack)
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          // Isi Utama Kartu
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-
-                // Header Paket (Penggunaan Column)
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.laptop_mac,
-                      size: 40,
-                      color: Colors.blueAccent,
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Paket Profesional',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Solusi terbaik untuk kebutuhan sistem dan pengembangan IT Anda.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 20),
-
-                // Harga & Durasi (Penggunaan Row dengan baseline alignment)
-                const Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Text(
-                      'Rp 5.000.000',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                    SizedBox(width: 4),
-                    Text(
-                      '/ proyek',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 20),
-
-                // Daftar Fitur Layanan (Kombinasi Column & Row)
-                const Column(
-                  children: [
-                    FeatureItem(text: 'Desain UI/UX Khusus'),
-                    SizedBox(height: 8),
-                    FeatureItem(text: 'Setup Database'),
-                    SizedBox(height: 8),
-                    FeatureItem(text: 'Integrasi API'),
-                    SizedBox(height: 8),
-                    FeatureItem(text: 'Dukungan Teknis 24/7'),
-                  ],
-                ),
-
-                const SizedBox(height: 24),
-
-                // Tombol Call-to-Action (SizedBox width double.infinity agar membentang)
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                    child: const Text(
-                      'Pilih Paket',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+      // Tata letak vertikal menggunakan Column
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Icon & Nama Katalog / Harga
+            Center(
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.laptop_mac,
+                    size: 70,
+                    color: Colors.blueAccent,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    widget.item.title,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 6),
+                  Text(
+                    '${widget.item.price} / proyek',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blueAccent,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+            const SizedBox(height: 24),
 
-          // Badge Melayang (Positioned di sudut kanan atas)
-          Positioned(
-            top: 15,
-            right: 15,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            // Container + padding deskripsi
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.amber,
-                borderRadius: BorderRadius.circular(12),
+                color: const Color(0xFFE3F2FD), // Warna pastel soft blue
+                borderRadius: BorderRadius.circular(12.0),
+                border: Border.all(color: Colors.blue.shade100),
               ),
-              child: const Text(
-                'Rekomendasi',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Deskripsi Paket',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    widget.item.description,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Daftar Fitur
+            const Text(
+              'Fitur Layanan:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Column(
+              children: widget.item.features
+                  .map(
+                    (feature) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.check_circle,
+                              color: Colors.green, size: 20),
+                          const SizedBox(width: 10),
+                          Text(feature, style: const TextStyle(fontSize: 15)),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: 32),
+
+            // Element Interaktif StatefulWidget
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    isSelected = !isSelected;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      isSelected ? Colors.green : Colors.blueAccent,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                child: Text(
+                  isSelected ? 'Paket Terpilih ✓' : 'Pilih Paket Ini',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
-  }
-}
-
-// Widget tambahan untuk item fitur layanan (Row dengan Icon centang dan Text)
-class FeatureItem extends StatelessWidget {
-  final String text;
-
-  const FeatureItem({super.key, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Icon(
-          Icons.check,
-          color: Colors.green,
-          size: 18,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          text,
-          style: const TextStyle(fontSize: 14),
-        ),
-      ],
     );
   }
 }

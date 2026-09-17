@@ -1,6 +1,6 @@
-# Tugas #4 Mobile - Aplikasi Katalog Layanan IT
+# Tugas #5 Mobile - Aplikasi Katalog Layanan IT 
 
-Pembuatan navigasi antar Screen (Stack Navigation dengan `Navigator.push`), penggunaan `StatelessWidget`, `StatefulWidget`, serta penyusunan layout menggunakan `Column`, `ListView`, `ListTile`, dan `Container`.
+Pembuatan Event dan State pada tampilan katalog. State digunakan untuk membuat notifikasi pop-up (muncul keluar) ketika user memilih dan mengklik salah satu paket, sedangkan Event digunakan untuk 'menyalakan', 'memicu', atau memancing agar baris kode yang menggunakan State tadi dapat bekerja.
 
 ---
 

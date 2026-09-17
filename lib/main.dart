@@ -39,14 +39,13 @@ class PackageItem {
 }
 
 // -----------------------------------------------------------------------------
-// SCREEN 1: BERANDA (StatelessWidget)
+// SCREEN 1: BERANDA (StatelessWidget) 
 // -----------------------------------------------------------------------------
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Data 3 Card Katalog
     final List<PackageItem> packages = [
       PackageItem(
         title: 'Paket Dasar',
@@ -109,13 +108,35 @@ class HomeScreen extends StatelessWidget {
                 backgroundColor: Colors.blueAccent,
                 child: Icon(Icons.laptop_mac, color: Colors.white),
               ),
-              title: Text(
-                item.title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+              title: Row(
+                children: [
+                  Text(
+                    item.title,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 8),
+                  // Menampilkan badgeText 
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      item.badgeText,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.blue.shade900,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               subtitle: Text('${item.price} / proyek'),
               trailing: const Icon(Icons.chevron_right),
-              // Navigasi Navigator.push (Stack Navigation)
+              // Navigasi Stack (Navigator.push)
               onTap: () {
                 Navigator.push(
                   context,
@@ -133,7 +154,7 @@ class HomeScreen extends StatelessWidget {
 }
 
 // -----------------------------------------------------------------------------
-// SCREEN 2: DETAIL KATALOG (StatefulWidget)
+// SCREEN 2: DETAIL KATALOG (StatefulWidget) - 
 // -----------------------------------------------------------------------------
 class DetailScreen extends StatefulWidget {
   final PackageItem item;
@@ -152,25 +173,19 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
+      // AppBar otomatis menampilkan tombol kembali tanpa 'leading' manual 
       appBar: AppBar(
         title: Text(widget.item.title),
-        // Button back untuk kembali ke Screen 1
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         backgroundColor: Colors.blueAccent,
         foregroundColor: Colors.white,
       ),
-      // Tata letak vertikal menggunakan Column
+      // Layout vertikal menggunakan Column 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Icon & Nama Katalog / Harga
+            // Icon & Nama Katalog / Harga 
             Center(
               child: Column(
                 children: [
@@ -201,12 +216,12 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Container + padding deskripsi
+            // Container deskripsi 
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: const Color(0xFFE3F2FD), // Warna pastel soft blue
+                color: const Color(0xFFE3F2FD), 
                 borderRadius: BorderRadius.circular(12.0),
                 border: Border.all(color: Colors.blue.shade100),
               ),
@@ -260,15 +275,30 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             const SizedBox(height: 32),
 
-            // Element Interaktif StatefulWidget
+            // Elemen Interaktif & State Management 
             SizedBox(
               width: double.infinity,
               height: 48,
               child: ElevatedButton(
+                // Event: onPressed
                 onPressed: () {
+                  // State update: setState()
                   setState(() {
                     isSelected = !isSelected;
                   });
+
+                  // Umpan balik visual saat state berubah
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        isSelected
+                            ? '${widget.item.title} berhasil dipilih!'
+                            : 'Pilihan ${widget.item.title} dibatalkan.',
+                      ),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
